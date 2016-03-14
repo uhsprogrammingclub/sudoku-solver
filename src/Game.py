@@ -293,7 +293,7 @@ def assessValue(assignment):
 
     """
     
-    print assignment
+    #print assignment
     
     # List to holds lists of columns, rows, and squares
     related = []
@@ -331,6 +331,78 @@ def assessValue(assignment):
     
     # Return the final count
     return count
+
+def T(t):
+    Tnot = 10000
+    eta = 0.01
+    return Tnot-eta*t
+
+def P(deltaE, T):
+    k = 0.00005
+    return math.e**(-deltaE/(k*T))
+    
+
+def betterSimulatedAnnealing(csp, variables):
+    """
+    Better Min-conflicts with a factor of randomness approach. Schedule is a mapping of time to temperature
+    """
+    # Unpack the CSP
+    assignment, domains = csp
+    
+    # Create Dictionary of conflicted variables and number of conflicts
+    
+    conflicted = {}
+    
+     # Iterate through list, randomly assign numbers, and add conflicted variables to array
+    for var in variables:
+
+        # Randomly assign number
+        num = random.choice(domains[var])
+        
+        # Update the stack to include the new number, whether it works or not
+        assignment[var[0]][var[1]] = num
+        
+    for var in variables:
+        conflicted[var] = countConflicts(assignment, var, assignment[var[0]][var[1]])
+        
+    t = 1
+    
+    while assessValue(assignment) != 0 and t < 1000000:
+        print "Completion =", 100-assessValue(assignment),"%"
+        changingVar = random.choice(conflicted.keys())
+
+        totalConflicts = assessValue(assignment)
+        
+        originalVal = assignment[changingVar[0]][changingVar[1]]
+        newVal = random.choice(domains[changingVar])
+         
+        assignment[changingVar[0]][changingVar[1]] = newVal
+        newTotalConflicts = assessValue(assignment)
+        deltaE = newTotalConflicts - totalConflicts
+        
+        if deltaE > 0:
+            if random.random() > P(deltaE, T(t)):
+                #reset to original
+                assignment[changingVar[0]][changingVar[1]] = originalVal
+                
+        Graphics.showPuzzle(assignment)
+        t+=1
+        for var in variables:
+            conflicted[var] = countConflicts(assignment, var, assignment[var[0]][var[1]])
+     
+        
+    if t != 1000000:
+        Graphics.showPuzzle(assignment)    
+        print "Solution Found!"
+    
+        return assignment
+    else:
+        Graphics.showPuzzle(assignment)
+        print "Failed with Completion =", 100-assessValue(assignment),"%"
+        return -1
+            
+        
+        
 
 def simulatedAnnealing(csp, variables, schedule):
     """
@@ -480,9 +552,8 @@ i = 0
 while i < 100*100:
     schedule.append(i/100 + 1)
     i += 1
-    
 if GameController.simulatedAnnealing:
-    solution = simulatedAnnealing(csp, initialVariables, schedule)
+    solution = betterSimulatedAnnealing(csp, initialVariables)
 else:
     # Run the selected algorithm with the puzzle
     solution = backtrackingSearch(csp, initialVariables) if GameController.backtrackingSearch else minConflicts(csp, initialVariables)

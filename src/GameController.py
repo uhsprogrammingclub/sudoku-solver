@@ -4,11 +4,11 @@ backtrackingSearch = True
 # Ordering
 
 #Filtering
-forwardChecking = False
-arcConsistency = False
+forwardChecking = True
+arcConsistency = True
 
 # Simulated Annealing
-simulatedAnnealing = False
+simulatedAnnealing = True
 
 
     
