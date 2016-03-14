@@ -1,15 +1,14 @@
-# Algorithm - NOTE: Select only one search method, and ensure one is selected
-backtrackingSearch = False
-minValueSearch = True
+# Algorithm; if not backtrackingSearch, minConflicts will be used
+backtrackingSearch = True
 
 # Ordering
 
 #Filtering
-forwardChecking = True
-arcConsistency = True
+forwardChecking = False
+arcConsistency = False
 
 # Simulated Annealing
-simulatedAnnealing = True
+simulatedAnnealing = False
 
 
     

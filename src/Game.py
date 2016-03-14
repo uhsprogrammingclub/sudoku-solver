@@ -386,15 +386,14 @@ def simulatedAnnealing(csp, variables, schedule):
         
         # If there is a positive energy change, then update the current state
         if valueChange > 0:
-            Graphics.showPuzzle(assignment)
             current = prospective
         else: 
             
             # With some probability (depending on change in E and temperature), step backwards
             if random.randint(1, math.e**(valueChange/temp)) == 1:
-                print "GODS HAVE ALIGNED! Odds: 1 in ", math.e**( (valueChange + 5) /temp), " VALUE CAHNGE:", valueChange
-                current = prospective
-                Graphics.showPuzzle(assignment)   
+                current = prospective  
+        
+        Graphics.showPuzzle(assignment)
         
         # Increment time
         t += 1
@@ -471,8 +470,6 @@ def init():
 
 # Run initialization function 
 init()
-        
-# minConflicts(puzzle, conflictedVariables)
 
 # Create CSP for readability
 csp = (initialAssignment, initialDomains)
@@ -483,11 +480,12 @@ i = 0
 while i < 100*100:
     schedule.append(i/100 + 1)
     i += 1
-
-solution = simulatedAnnealing(csp, initialVariables, schedule)
-
-# Run the selected algorithm with the puzzle
-# solution = backtrackingSearch(csp, initialVariables) if GameController.backtrackingSearch else minConflicts(csp, initialVariables)
+    
+if GameController.simulatedAnnealing:
+    solution = simulatedAnnealing(csp, initialVariables, schedule)
+else:
+    # Run the selected algorithm with the puzzle
+    solution = backtrackingSearch(csp, initialVariables) if GameController.backtrackingSearch else minConflicts(csp, initialVariables)
 
 # Show the answer on the screen
 Graphics.showPuzzle(solution)
